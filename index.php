@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+<!-- Bootstrap Include -->
+<link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
+<script src="./bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script>
+<script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
+
+=======
+>>>>>>> krupong/master
 <?php
 session_start();
 /** Set flag that this is a parent file */

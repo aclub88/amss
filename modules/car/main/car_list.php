@@ -1,13 +1,12 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //sd page
-if($result_permission['p1']!=1){
-exit();
-}
-
+if($result_permission['p1']!=1){exit();}?>
+<BR>
+<div class="container">
+  <div class="panel panel-default">
+<?
 //ฟังชั่นupload
 function file_upload() {
 		$uploaddir = 'modules/car/upload_files/';      //ที่เก็บไไฟล์
@@ -49,68 +48,102 @@ function file_upload() {
 			return  $changed_name;
 			}
 }
-
-echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ยานพาหนะ</strong></font></td></tr>";
-echo "</table>";
+    ?><div class="panel-heading"><h3 class="panel-title">ยานพาหนะ</h3></div><?
 }
-
 //ส่วนเพิ่มข้อมูล
 if($index==1){
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มยานพาหนะ</B></Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td  align='right' width=40%>ประเภท&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='car_type' id='car_type' size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from  car_type  order by code";
-$dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-   $name=$result['name'];
-		echo  "<option value = $result[code]>$result[code] $name</option>" ;
-	}
-echo "</select>";
-echo "</div></td></tr>";
+    $header="เพิ่มยานพาหนะ";
+    $car_type = "";
+    $car_code = "";
+    $car_number = "";
+    $car_name = "";
+    $status = "";
 
-echo "<Tr align='left'><Td  align='right'>รหัสยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_code' id='car_code' Size='3'  maxlength='3' onkeydown='integerOnly()'></Td></Tr>";
+    if(!empty($_GET['id'])) $id=$_GET['id'];
+    else $id=0;
+    if(!empty($_GET['page'])) $page=$_GET['page'];
+    else $page=1;
+    if(!empty($_GET['ed'])) $ed=$_GET['ed'];
+    else $ed=0;
 
-echo "<Tr align='left'><Td  align='right'>เลขทะเบียน&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_number' id='car_number' Size='20'></Td></Tr>";
+    if($ed==1){
+        $header="แก้ไขยานพาหนะ";
 
-echo "<Tr align='left'><Td  align='right'>ชื่อยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_name' id='car_name' Size='60'></Td></Tr>";
-
-echo "<Tr><Td align='right'>สถานะ&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='status'  id='status' size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option value = '1'>1.พาหนะปัจจุบันใช้งานเฉพาะ</option>";
-echo  "<option value = '2'>2.พาหนะปัจจุบันอนุญาตให้จองใช้งาน </option>";
-echo  "<option value = '3'>3.พาหนะที่เคยใช้งาน </option>";
-echo "</select>";
-echo "</div></td></tr>";
-echo  "<tr align='left'>";
-echo  "<td align='right'>ไฟล์รูปภาพ&nbsp;&nbsp;</td>";
-echo  "<td align='left'><input name = 'userfile' type = 'file'></td>";
-echo  "</tr>";
-echo  "<tr align='left'>";
-echo  "<td align='right'></td><td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td>";
-echo  "</tr>";
-echo "</Table>";
-echo "</form>";
-}
-//ส่วนยืนยันการลบข้อมูล
-if($index==2) {
-echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
-echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/car_list&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=car&task=main/car_list&page=$_REQUEST[page]\"'";
-echo "</td></tr></table>";
+        $sql = "select * from  car_car where id='$_GET[id]'";
+        $dbquery = mysqli_query($connect,$sql);
+        $result = mysqli_fetch_array($dbquery);
+        $car_type = $result['car_type'];
+        $car_code = $result['car_code'];
+        $car_number = $result['car_number'];
+        $car_name = $result['name'];
+        $status = $result['status'];
+    }
+?>
+<div class="panel-heading"><h3 class="panel-title"><?=$header;?></h3></div>
+<div class="panel-body">
+    <form Enctype = multipart/form-data id='frm1' name='frm1' class="form-horizontal">
+        <Input Type=hidden Name="id" Value="<?=$id?>"></Input>
+        <Input Type=hidden Name="page" Value="<?=$page?>"></Input>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >ประเภท</label>
+          <div class="col-sm-2 input-group">
+              <Select  name='car_type' id='car_type' class="form-control">
+                  <option  value = ''>เลือก</option>
+                  <?
+                $sql = "select * from  car_type  order by code";
+                $dbquery = mysqli_query($connect,$sql);
+                While ($result = mysqli_fetch_array($dbquery))
+                {
+                    $name=$result['name'];
+                    $selected="";
+                    if($result['code']==$car_type) $selected="selected";
+                    echo  "<option value = $result[code] $selected>$result[code] $name</option>" ;
+                }
+        ?></select></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >รหัสยานพาหนะ</label>
+          <div class="col-sm-2 input-group"><Input Type='Text' Name='car_code' id='car_code' class="form-control"  maxlength='3' onkeydown='integerOnly()' value="<?=$car_code?>"></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >เลขทะเบียน</label>
+          <div class="col-sm-2 input-group"><Input Type='Text' Name='car_number' id='car_number' class="form-control" value="<?=$car_number?>"></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >ชื่อยานพาหนะ</label>
+          <div class="col-sm-2 input-group"><Input Type='Text' Name='car_name' id='car_name' class="form-control" value="<?=$car_name?>"></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >สถานะ</label>
+          <div class="col-sm-2 input-group">
+              <Select  name='status'  id='status' class="form-control">
+                <option value = ''>เลือก</option>
+                <option value = '1' <? if($status==1) echo "selected";?> >1.พาหนะปัจจุบันใช้งานเฉพาะ</option>
+                <option value = '2' <? if($status==2) echo "selected";?> >2.พาหนะปัจจุบันอนุญาตให้จองใช้งาน </option>
+                <option value = '3' <? if($status==3) echo "selected";?> >3.พาหนะที่เคยใช้งาน </option>
+              </select>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >ไฟล์รูปภาพ</label>
+          <div class="col-sm-2 input-group"><input name = 'userfile' type = 'file' class="form-control"></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+          <div class="col-sm-4">
+            <label >
+                <button type="button" name="smb" class="btn btn-primary" onclick='goto_url_ed(<?=$ed?>,1)'>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>ตกลง
+                </button>&nbsp;
+                <button type="button" name="back" class="btn btn-default" onclick='goto_url_ed(<?=$ed?>,0)'>
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>ย้อนกลับ
+                </button>
+            </label>
+          </div>
+        </div>
+    </form>
+      </div>
+<?
 }
 //ส่วนลบข้อมูล
 if($index==3){
@@ -141,78 +174,6 @@ $num_rows=mysqli_num_rows($dbquery);
 		$dbquery = mysqli_query($connect,$sql);
 		}
 }
-
-//ส่วนฟอร์มแก้ไขข้อมูล
-if ($index==5){
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>แก้ไข</B></Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-$sql = "select * from  car_car where id='$_GET[id]'";
-$dbquery = mysqli_query($connect,$sql);
-$result_ref = mysqli_fetch_array($dbquery);
-
-echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td  align='right' width=40%>ประเภท&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='car_type' id='car_type' size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from  car_type  order by code";
-$dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-   $name=$result['name'];
-		   if($result_ref ['car_type']==$result[code]){
-			echo  "<option value = $result[code] selected>$result[code] $name</option>" ;
-			}
-			else{
-			echo  "<option value = $result[code]>$result[code] $name</option>" ;
-			}
-	}
-echo "</select>";
-echo "</div></td></tr>";
-
-echo "<Tr align='left'><Td  align='right'>รหัสยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_code' id='car_code' Size='3'  maxlength='3'  value='$result_ref[car_code]'  onkeydown='integerOnly()'></Td></Tr>";
-echo "<Tr align='left'><Td  align='right'>เลขทะเบียน&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_number' id='car_number' Size='20' value='$result_ref[car_number]' ></Td></Tr>";
-echo "<Tr align='left'><Td  align='right'>ชื่อยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_name' id='car_name' Size='60' value='$result_ref[name]' ></Td></Tr>";
-echo "<Tr><Td align='right'>สถานะ&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='status'  id='status' size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-
-		if($result_ref[status]==1){
-		$selected_1="selected";
-		$selected_2="";
-		$selected_3="";
-		}
-		else if($result_ref[status]==2){
-		$selected_1="";
-		$selected_2="selected";
-		$selected_3="";
-		}
-		else if($result_ref[status]==3){
-		$selected_1="";
-		$selected_2="";
-		$selected_3="selected";
-		}
-echo  "<option value = '1' $selected_1>1.พาหนะปัจจุบันใช้งานเฉพาะ</option>";
-echo  "<option value = '2' $selected_2>2.พาหนะปัจจุบันอนุญาตให้จองใช้งาน </option>";
-echo  "<option value = '3' $selected_3>3.พาหนะที่เคยใช้งาน </option>";
-echo "</select>";
-echo "</div></td></tr>";
-echo  "<tr align='left'>";
-echo  "<td align='right'>ไฟล์รูปภาพ&nbsp;&nbsp;</td>";
-echo  "<td align='left'><input name = 'userfile' type = 'file'></td>";
-echo  "</tr>";
-echo  "<tr align='left'>";
-echo  "<td align='right'></td>";
-echo  "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td>";
-echo  "</tr>";
-echo "</Table>";
-echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
-echo "</form>";
-}
-
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
 $sql = "select * from car_car where  car_code='$_POST[car_code]' and  id!='$_POST[id]' ";
@@ -242,7 +203,6 @@ where id='$_POST[id]'";
 }
 $dbquery = mysqli_query($connect,$sql);
 }
-
 //ส่วนแสดง
 if(!(($index==1) or ($index==2) or ($index==5))){
 	//ส่วนของการแยกหน้า
@@ -257,7 +217,6 @@ $totalpages=ceil($num_rows/$pagelen);
 if(!isset($_REQUEST['page'])){
 $_REQUEST['page']="";
 }
-
 if($_REQUEST['page']==""){
 $page=$totalpages;
 		if($page<2){
@@ -275,9 +234,7 @@ else{
 		$page=$_REQUEST['page'];
 		}
 }
-
 $start=($page-1)*$pagelen;
-
 if(($totalpages>1) and ($totalpages<16)){
 echo "<div align=center>";
 echo "หน้า	";
@@ -340,10 +297,29 @@ echo "</div>";
 
 $sql = "select car_car.id, car_car.car_code, car_car.name as car_name, car_car.car_number, car_type.name, car_car.status, car_car.pic from  car_car left join car_type on car_car.car_type=car_type.code  order by  car_car.car_type, car_car.car_code limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table  class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='9' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/car_list&index=1\"'>";
-echo "</Td></Tr>";
-echo "<Tr bgcolor=#FFCCCC align=center ><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td width='200'>ประเภทยานพาหนะ</Td><Td>ชื่อยานพาหนะ</Td><Td>เลขทะเบียน</Td><Td>สถานะภาพ</Td><Td align='center' width='50'>รูป</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
+?>
+  <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <a href="?option=car&task=main/car_list&index=1" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;เพิ่มข้อมูล</a>
+            </div>
+        </div>
+    </div>
+      <table class="table table-hover table-striped table-condensed table-responsive">
+    <thead>
+        <tr>
+          <th>ที่</th>
+          <th>รหัส</th>
+          <th>ประเภทยานพาหนะ</th>
+          <th>ชื่อยานพาหนะ</th>
+          <th>เลขทะเบียน</th>
+          <th>สถานะภาพ</th>
+          <th>รูป</th>
+          <th>ลบ</th>
+          <th>แก้ไข</th>
+        </tr>
+          </thead>
+          <tbody><?
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -363,30 +339,33 @@ While ($result = mysqli_fetch_array($dbquery))
 				else if ($status==3){
 				$status="<font color='#FF0000'>พาหนะที่เคยใช้งาน</font>";
 				}
-
-			if(($M%2) == 0)
-			$color="#FFFFC";
-			else  	$color="#FFFFFF";
-
-		echo "<Tr  bgcolor=$color align=center ><Td>$N</Td><Td>$car_code</Td><Td align='left'>$car_type</Td><Td align=left>$car_name</Td><Td align=left>$car_number</Td><Td align=left>$status</Td>";
-if($result['pic']!=""){
-echo "<Td align='center'><a href='modules/car/main/pic_show.php?&id=$id' target='_blank'><img src=images/admin/user.gif border='0' alt='รูปภาพ'></a></Td>";
-}
-else{
-echo "<Td align='center'>&nbsp;</Td>";
-}
-echo "<Td><div align=center><a href=?option=car&task=main/car_list&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></a></div></Td>
-		<Td><a href=?option=car&task=main/car_list&index=5&id=$id&page=$page><img src=images/edit.png border='0' alt='แก้ไข'></a></div></Td>
-	</Tr>";
+    ?>
+    <Tr>
+        <Td><?=$N?></Td>
+        <Td><?=$car_code?></Td>
+        <Td><?=$car_type?></Td>
+        <Td><?=$car_name?></Td>
+        <Td><?=$car_number?></Td>
+        <Td><?=$status?></Td>
+        <?
+if($result['pic']!=""){?>
+    <Td><a href='modules/car/main/pic_show.php?&id=<?=$id?>' target='_blank' class='btn btn-primary'><span class='glyphicon glyphicon-picture' ></span></a></Td>
+<?}else echo "<Td>&nbsp;</Td>";?>
+    <Td><a href=?option=car&task=main/car_list&index=3&id=<?=$id?>&page=<?=$page?> data-toggle='confirmation' class='btn btn-danger' data-title="คุณต้องการลบข้อมูลนี้ใช่หรือไม่" data-btn-ok-label="ใช่" data-btn-ok-icon="glyphicon glyphicon-share-alt" data-btn-ok-class="btn-success" data-btn-cancel-label="ไม่ใช่!" data-btn-cancel-icon="glyphicon glyphicon-ban-circle" data-btn-cancel-class="btn-danger"><span class='glyphicon glyphicon-trash'></span></a></Td>
+    <Td><a href=?option=car&task=main/car_list&page=<?=$page?>&index=1&id=<?=$id?>&ed=1 class='btn btn-warning'><span class='glyphicon glyphicon-pencil' ></span></a></Td>
+	</Tr>
+      <?
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
-echo "</Table>";
-}
-
-?>
+    ?>
+          </tbody>
+</Table>
+<?}?>
+    </div>
+    </div>
 <script>
-function goto_url(val){
+function goto_url_ed(ed,val){
 	if(val==0){
 		callfrm("?option=car&task=main/car_list");   // page ย้อนกลับ
 	}else if(val==1){
@@ -401,27 +380,11 @@ function goto_url(val){
 		}else if(frm1.status.value==""){
 			alert("กรุณาเลือกสถานะ");
 		}else{
-			callfrm("?option=car&task=main/car_list&index=4");   //page ประมวลผล
-		}
-	}
-}
-
-function goto_url_update(val){
-	if(val==0){
-		callfrm("?option=car&task=main/car_list");   // page ย้อนกลับ
-	}else if(val==1){
-		if(frm1.car_type.value == ""){
-			alert("กรุณาเลือกประเภท");
-		}else if(frm1.car_code.value==""){
-			alert("กรุณากรอกรหัสยานพาหนะ");
-		}else if(frm1.car_number.value==""){
-			alert("กรุณากรอกเลขทะเบียนยานพาหนะ");
-		}else if(frm1.car_name.value==""){
-			alert("กรุณากรอกชื่อยานพาหนะ");
-		}else if(frm1.status.value==""){
-			alert("กรุณาเลือกสถานะ");
-		}else{
-			callfrm("?option=car&task=main/car_list&index=6");   //page ประมวลผล
+            if(ed==1){
+                callfrm("?option=car&task=main/car_list&index=6");   //page ประมวลผล edit
+            }else{
+                callfrm("?option=car&task=main/car_list&index=4");   //page ประมวลผล
+            }
 		}
 	}
 }

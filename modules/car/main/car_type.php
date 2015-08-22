@@ -1,57 +1,77 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //sd page
-if($result_permission['p1']!=1){
-exit();
-}
-
-echo "<br />";
-
+if($result_permission['p1']!=1){exit();}
+?>
+<BR>
+<div class="container">
+  <div class="panel panel-default">
+<?
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ประเภทยานพาหนะ</strong></font></td></tr>";
-echo "</table>";
+      ?><div class="panel-heading"><h3 class="panel-title">ประเภทยานพาหนะ</h3></div><?
 }
 //ส่วนเพิ่มข้อมูล
 if($index==1){
-echo "<form id='frm1' name='frm1'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มข้อมูล</B></Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td align='right' width=40%>รหัส</Td><Td><Input Type='Text' Name='code' Size='5'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>ชื่อประเภท</Td><Td><Input Type='Text' Name='name'  Size='40'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'></Td><Td><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></Td></Tr>";
-echo "<Br>";
-echo "</Table>";
-echo "<Br>";
-echo "";
+    $header="บันทึกประเภทยานพาหนะ";
+    $code="";
+    $name="";
 
-echo "</form>";
-}
-//ส่วนยืนยันการลบข้อมูล
-if($index==2) {
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
-echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/car_type&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=car&task=main/car_type&page=$_REQUEST[page]\"'";
-echo "</td></tr></table>";
+    if(!empty($_GET['id'])) $id=$_GET['id'];
+    else $id=0;
+    if(!empty($_GET['page'])) $page=$_GET['page'];
+    else $page=1;
+    if(!empty($_GET['ed'])) $ed=$_GET['ed'];
+    else $ed=0;
+
+    if($ed==1){
+        $header="แก้ไขประเภทยานพาหนะ";
+        $sql = "select * from  car_type where id='$_GET[id]'";
+        $dbquery = mysqli_query($connect,$sql);
+        $result = mysqli_fetch_array($dbquery);
+        $code = $result['code'];
+        $name = $result['name'];
+    }
+?>
+<div class="panel-heading"><h3 class="panel-title"><?=$header;?></h3></div>
+<div class="panel-body">
+    <form id='frm1' name='frm1' class="form-horizontal">
+
+<Input Type=hidden Name="id" Value="<?=$id?>">
+<Input Type=hidden Name="page" Value="<?=$page?>">
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >รหัส</label>
+          <div class="col-sm-2 input-group"><Input Type='Text' Name='code' class="form-control" value="<?=$code?>"></div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right" >ชื่อประเภท</label>
+          <div class="col-sm-3   input-group"><Input Type='Text' Name='name' class="form-control" value="<?=$name?>">
+          </div>
+        </div><hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+          <div class="col-sm-4">
+            <label >
+                <button type="button" name="smb" class="btn btn-primary" onclick='goto_url_ed(<?=$ed?>,1)'>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>ตกลง
+                </button>&nbsp;
+                <button type="button" name="back" class="btn btn-default" onclick='goto_url_ed(<?=$ed?>,0)'>
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>ย้อนกลับ
+                </button>
+            </label>
+          </div>
+        </div>
+    </form>
+      </div>
+<?
 }
 //ส่วนลบข้อมูล
 if($index==3){
 $sql = "delete from car_type where id=$_GET[id]";
 $dbquery = mysqli_query($connect,$sql);
 }
-
 //ส่วนเพิ่มข้อมูล
 if($index==4){
-
 $sql = "select * from car_type where  code='$_POST[code]' ";
 $dbquery = mysqli_query($connect,$sql);
 if(mysqli_num_rows($dbquery)>=1){
@@ -60,30 +80,6 @@ exit();
 }
 $sql = "insert into car_type (code,name) values ('$_POST[code]','$_POST[name]')";
 $dbquery = mysqli_query($connect,$sql);
-}
-//ส่วนฟอร์มแก้ไขข้อมูล
-if ($index==5){
-echo "<form id='frm1' name='frm1'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>แก้ไข</B></Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-$sql = "select * from  car_type where id='$_GET[id]'";
-$dbquery = mysqli_query($connect,$sql);
-$result = mysqli_fetch_array($dbquery);
-
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส</Td><Td><Input Type='Text' Name='code' Size='5' value='$result[code]'></Td></Tr>";
-
-echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อประเภท</Td><Td><Input Type='Text' Name='name' id='pay_type_name' Size='40' value='$result[name]'></Td></Tr>";
-echo "</Table>";
-echo "<Br />";
-echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
-
-echo "</form>";
 }
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
@@ -96,10 +92,8 @@ exit();
 $sql = "update car_type set code='$_POST[code]', name='$_POST[name]' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
-
 //ส่วนการแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
-
 //ส่วนของการแยกหน้า
 $pagelen=20;  // 1_กำหนดแถวต่อหน้า
 $url_link="option=car&task=main/car_type";  // 2_กำหนดลิงค์ฺ
@@ -195,10 +189,25 @@ echo "</div>";
 
 $sql = "select * from car_type  order by code  limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/car_type&index=1\"'>";
-echo "</Td></Tr>";
-echo "<Tr bgcolor=#FFCCCC align='center' class=style2><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td>ชื่อ</Td><Td width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
+?>
+  <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <a href="?option=car&task=main/car_type&index=1" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;เพิ่มข้อมูล</a>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover table-striped table-condensed table-responsive">
+    <thead>
+        <tr>
+          <th>ที่</th>
+          <th>รหัส</th>
+          <th>ชื่อ</th>
+          <th>ลบ</th>
+          <th>แก้ไข</th>
+        </tr>
+          </thead>
+          <tbody><?
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -206,46 +215,40 @@ While ($result = mysqli_fetch_array($dbquery))
 		$id = $result['id'];
 		$code= $result['code'];
 		$name = $result['name'];
-			if(($M%2) == 0)
-			$color="#FFFFC";
-			else  	$color="#FFFFFF";
-
-		echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td><Td align='center'>$code</Td> <Td align='left'>$name</Td><Td><div align='center'><a href=?option=car&task=main/car_type&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></a></div></Td>
-		<Td><a href=?option=car&task=main/car_type&index=5&id=$id&page=$page><img src=images/edit.png border='0' alt='แก้ไข'></a></div></Td>
-	</Tr>";
+?>
+              <Tr>
+                  <Td><?=$N?></Td>
+                  <Td><?=$code?></Td>
+                  <Td><?=$name?></Td>
+                  <Td><a href=?option=car&task=main/car_type&index=3&id=<?=$id?>&page=<?=$page?> data-toggle='confirmation' class='btn btn-danger' data-title="คุณต้องการลบข้อมูลนี้ใช่หรือไม่" data-btn-ok-label="ใช่" data-btn-ok-icon="glyphicon glyphicon-share-alt" data-btn-ok-class="btn-success" data-btn-cancel-label="ไม่ใช่!" data-btn-cancel-icon="glyphicon glyphicon-ban-circle" data-btn-cancel-class="btn-danger"><span class='glyphicon glyphicon-trash'></span></a></Td>
+    <Td><a href=?option=car&task=main/car_type&page=<?=$page?>&index=1&id=<?=$id?>&ed=1 class='btn btn-warning'><span class='glyphicon glyphicon-pencil' ></span></a></Td>
+	</Tr>
+<?
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
-echo "</Table>";
-}
-
 ?>
+          </tbody>
+</Table>
+<?}?>
+   </div>
+</div>
 <script>
-function goto_url(val){
-	if(val==0){
-		callfrm("?option=car&task=main/car_type");   // page ย้อนกลับ
-	}else if(val==1){
-		if(frm1.code.value == ""){
-			alert("กรุณากรอกรหัส");
-		}else if(frm1.name.value==""){
-			alert("กรุณากรอกชื่อประเภท");
-		}else{
-			callfrm("?option=car&task=main/car_type&index=4");   //page ประมวลผล
-		}
-	}
-}
-
-function goto_url_update(val){
-	if(val==0){
-		callfrm("?option=car&task=main/car_type");   // page ย้อนกลับ
-	}else if(val==1){
-		if(frm1.code.value == ""){
-			alert("กรุณากรอกรหัส");
-		}else if(frm1.name.value==""){
-			alert("กรุณากรอกชื่อประเภท");
-		}else{
-			callfrm("?option=car&task=main/car_type&index=6");   //page ประมวลผล
-		}
-	}
+function goto_url_ed(ed,val){
+    if(val=='0'){
+        callfrm("?option=car&task=main/car_type");   // page ย้อนกลับ
+    }else if(val=='1'){
+        if(frm1.code.value == ""){
+            alert("กรุณากรอกรหัส");
+        }else if(frm1.name.value==""){
+            alert("กรุณากรอกชื่อประเภท");
+        }else{
+            if(ed==1){
+                callfrm("?option=car&task=main/car_type&index=6");   //page ประมวลผล edit
+            }else{
+                callfrm("?option=car&task=main/car_type&index=4");   //page ประมวลผล
+            }
+        }
+    }
 }
 </script>

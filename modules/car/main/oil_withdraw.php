@@ -2,17 +2,14 @@
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 require_once "modules/car/time_inc.php";
-
 ?>
 <script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
-
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
 var printReady = document.getElementById(content);
 //var txt= 'nn';
 var txt= '';
-
 if (document.getElementsByTagName != null){
 var txtheadTags = document.getElementsByTagName('head');
 if (txtheadTags.length > 0){
@@ -35,7 +32,6 @@ printWin.print();
 </script>
 <div id="lblPrint">
 <?php
-
 $user=$_SESSION['login_user_id'];
 //กรณีเลือกแสดงเฉพาะคัน
 if(isset($_REQUEST['car_index'])){
@@ -44,7 +40,6 @@ $car_index=$_REQUEST['car_index'];
 else{
 $car_index="";
 }
-
 $sql_name = "select * from person_main ";
 $dbquery_name = mysqli_query($connect,$sql_name);
 while($result_name = mysqli_fetch_array($dbquery_name)){;
@@ -55,13 +50,14 @@ while($result_name = mysqli_fetch_array($dbquery_name)){;
 $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 }
 //ส่วนหัว
-echo "<br />";
+?>
+<BR>
+<div class="container">
+  <div class="panel panel-default">
+<?
 if(!(($index==1)  or ($index==2) or ($index==5) or ($index==7))){
-echo "<table width='100%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ใบเบิกน้ำมันเชื้อเพลิงและน้ำมันหล่อลื่น</strong></font></td></tr>";
-echo "</table>";
+    ?><div class="panel-heading"><h3 class="panel-title">ใบเบิกน้ำมันเชื้อเพลิงและน้ำมันหล่อลื่น</h3></div><?
 }
-
 //ส่วนฟอร์มรับข้อมูล
 if($index==1){
 echo "<form id='frm1' name='frm1'>";
@@ -158,7 +154,6 @@ echo "&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลั�
 echo "</div>";
 echo "</form>";
 }
-
 if ($index==7){
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>รายละเอียด</B></Font>";
@@ -359,10 +354,8 @@ echo "</tr>";
 ///////
 echo "</table>";
 }
-
 //ส่วนแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5) or ($index==7))){
-
 //ส่วนของการแยกหน้า
 if($car_index>=1){
 $sql="select id from car_main where car='$car_index' ";
@@ -380,7 +373,6 @@ $totalpages=ceil($num_rows/$pagelen);
 if(!isset($_REQUEST['page'])){
 $_REQUEST['page']="";
 }
-
 if($_REQUEST['page']==""){
 $page=$totalpages;
 		if($page<2){
@@ -398,9 +390,7 @@ else{
 		$page=$_REQUEST['page'];
 		}
 }
-
 $start=($page-1)*$pagelen;
-
 if(($totalpages>1) and ($totalpages<16)){
 echo "<div align=center>";
 echo "หน้า	";
@@ -468,33 +458,45 @@ else{
 $sql="select car_main.id, car_main.person_id, car_main.car_start, car_main.car_finish, car_main.rec_date, car_main.officer_sign, car_main.group_sign, car_main.commander_sign, car_main.commander_grant, car_car.name  from car_main left join car_car on  car_main.car=car_car.car_code order by car_start, car_car.car_code limit $start,$pagelen";
 }
 $dbquery = mysqli_query($connect,$sql);
-
-echo  "<table width=95% border=0 align=center>";
-echo "<Tr>";
-echo "<Td colspan='10' align='right'>";
-echo "<form  name='frm1'>";
-echo "&nbsp;<Select  name='car_index' size='1'>";
-echo  '<option value ="" >รถทุกคัน</option>' ;
-		$sql_car = "SELECT *  FROM car_car where status='2' ";
-		$dbquery_car = mysqli_query($connect,$sql_car);
-				While ($result_car = mysqli_fetch_array($dbquery_car ))
-				{
-						if ($car_index==$result_car ['car_code']){
-						echo "<option value=$result_car[car_code]  selected>$result_car[car_number] $result_car[name]</option>";
-						}
-						else{
-						echo "<option value=$result_car[car_code]>$result_car[car_number] $result_car[name]</option>";
-						}
-				}
-					echo "</select>";
-echo "&nbsp;<INPUT TYPE='button' name='smb' value='เลือก' onclick='goto_url2(1)'>";
-echo "</form>";
-
-echo "</Td>";
-echo "</Tr>";
-
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='60'>เลขที่</Td><Td width='120'>วันเริ่มใช้รถ</Td><Td width='120'>วันสิ้นสุดการใช้</Td><Td>รถ</Td><Td>ผู้ขอใช้</Td><Td width='120'>วดป ขออนุญาต</Td><Td  width='120'>อนุมัติ/คำสั่ง</Td><Td width='80'>รายละเอียด</Td><Td width='80'>เขียนใบเบิก</Td></Tr>";
-
+    ?>
+      <div class="panel-body">
+        <form id='frm1' name='frm1' class="form-horizontal">
+        <div class="row">
+            <div class="col-md-10 text-left">
+            </div>
+            <div class="col-md-2 text-right">
+                <Select  name='car_index' class="form-control" onchange="goto_url2(1)">
+                    <option value ="" >รถทุกคัน</option>
+                    <?
+    $sql_car = "SELECT car_code,name,car_number  FROM car_car where status<='2' ";
+    $dbquery_car = mysqli_query($connect,$sql_car);
+    While ($result_car = mysqli_fetch_array($dbquery_car )){
+        $selected="";
+        if ($car_index==$result_car ['car_code']) $selected="selected";
+            echo "<option value=$result_car[car_code]  $selected>$result_car[car_number] $result_car[name]</option>";
+    }
+    ?>
+    </select>
+            </div>
+       </div>
+        </form>
+          </div>
+      <table class="table table-hover table-striped table-condensed table-responsive">
+          <thead>
+            <tr>
+              <th>เลขที่</th>
+              <th>วันเริ่มใช้รถ</th>
+              <th>วันสิ้นสุดการใช้</th>
+              <th>รถ</th>
+              <th>ผู้ขอใช้</th>
+              <th>วดป ขออนุญาต</th>
+              <th>อนุมัติ/คำสั่ง</th>
+              <th>รายละเอียด</th>
+              <th>เขียนใบเบิก</th>
+            </tr>
+          </thead>
+          <tbody>
+        <?
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 
@@ -508,49 +510,38 @@ While ($result = mysqli_fetch_array($dbquery)){
 		$group_sign = $result['group_sign'];
 		$grant = $result['commander_grant'];
 		$commander_sign = $result['commander_sign'];
-			if(($M%2) == 0)
-			$color="#FFFFB";
-			else  	$color="#FFFFFF";
-echo "<Tr bgcolor='$color'><Td valign='top' align='center'>$N</Td><Td valign='top' align='left'>";
-echo thai_date_3($car_start);
-echo "</Td><Td align='left'>";
-echo thai_date_3($car_finish);
-echo "</Td>";
-echo "<Td valign='top' align='left' >$result[name]</Td>";
-echo "<Td valign='top' align='left' >";
-echo $full_name_ar[$person_id];
-echo "</Td>";
-echo "<Td valign='top' align='left' >";
-echo thai_date_3($rec_date);
-echo "</Td>";
-
-echo "<Td valign='top' align='center'>";
-if($grant==1){
-echo "<img src=images/yes.png border='0'>";
-}
-else if($grant==2){
-echo "<img src=images/no.png border='0'>";
-}
-else{
-echo "รออนุมัติ";
-}
-echo "</Td>";
-echo "<Td valign='top' align='center'><a href=?option=car&task=main/oil_withdraw&index=7&id=$id&page=$page&car_index=$car_index><img src=images/browse.png border='0' alt='รายละเอียด'></Td>";
-if($commander_sign!="") {
-echo "<Td valign='top' align='center'><a href=?option=car&task=main/oil_withdraw&index=1&id=$id&page=$page&car_index=$car_index><img src=images/edit.png border='0' alt='เขียนใบเบิก'></a></Td>";
-}
-else{
+			?>
+<Tr>
+    <Td><?=$N?></Td>
+    <Td><?echo thai_date_3($car_start);?></Td>
+    <Td><?echo thai_date_3($car_finish);?></Td>
+    <Td><?=$result['name']?></Td>
+    <Td><?echo $full_name_ar[$person_id];?></Td>
+    <Td><?echo thai_date_3($rec_date);?></Td>
+    <Td>
+<?
+if($grant==1){echo "<img src=images/yes.png border='0'>";}
+else if($grant==2){echo "<img src=images/no.png border='0'>";}
+else{echo "รออนุมัติ";}
+?>
+    </Td>
+<Td><a href=?option=car&task=main/oil_withdraw&index=7&id=<?=$id?>&page=<?=$page?>&car_index=<?=$car_index?> class='btn btn-primary'><span class='glyphicon glyphicon-file' ></span></a></Td>
+<?
+if($commander_sign!=""){
+echo "<Td><a href=?option=car&task=main/oil_withdraw&index=1&id=$id&page=$page&car_index=$car_index><img src=images/edit.png border='0' alt='เขียนใบเบิก'></a></Td>";
+}else{
 echo "<td></td>";
 }
-echo "</Tr>";
-
+?>
+        </Tr>
+<?
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 }
-echo "</Table>";
-}
-
 ?>
+          </tbody>
+          </Table>
+<?}?>
 <script>
 function goto_url(val){
 	if(val==0){
@@ -569,8 +560,6 @@ function goto_url(val){
 		}
 	}
 }
-
-
 function goto_url_update(val){
 	if(val==0){
 		callfrm("?option=car&task=main/oil_withdraw");   // page ย้อนกลับ
@@ -588,9 +577,7 @@ function goto_url_update(val){
 		}
 	}
 }
-
 function goto_url2(val){
 callfrm("?option=car&task=main/oil_withdraw");
 }
-
 </script>
